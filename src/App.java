@@ -14,6 +14,7 @@ public class App {
         FlappyDeutsch flappyDeutsch = new FlappyDeutsch();
         frame.add(flappyDeutsch);
         frame.pack();
+        frame.requestFocus();
         frame.setVisible(true);
     }
 }
