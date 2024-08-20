@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.random;
 import javax.swing.*;
 
@@ -58,7 +59,11 @@ public class FlappyDeutsch extends JPanel implements ActionListener, KeyListener
     int velocityX = -4;
     int gravity = 1;
 
+    ArrayList<Pipe> pipes;
+    Random random = new Random();
+
     Timer gameLoop;
+    Timer PlacePipesTimer;
 
 
     FlappyDeutsch(){
@@ -74,12 +79,32 @@ public class FlappyDeutsch extends JPanel implements ActionListener, KeyListener
         topPipImg = new ImageIcon(getClass().getResource("./toppipe.png")).getImage();
         buttomPipImg = new ImageIcon(getClass().getResource("./bottompipe.png")).getImage();
 
+        //bird
         bird = new Bird(birdImg);
+        pipes = new ArrayList<Pipe>();
 
-        // game timer 
+        //place pipes timer
+        PlacePipesTimer = new Timer(1500, new ActionListener(){
+            @Override
+            public  void  actionPerformed(ActionEvent e){
+                placePipes();
+            }
+        });
+
+        PlacePipesTimer.start();
+
+        // gamejava.util. timer 
         gameLoop = new Timer(1000/60, this);
         gameLoop.start();
     }
+
+    public void placePipes(){
+        int randomPipY = (int) (pipey - pipeHeight/4 - Math.random()*(pipeHeight/2));
+        Pipe topPipe = new Pipe(topPipImg);
+        topPipe.y = randomPipY;
+        pipes.add(topPipe);
+    }
+
 
     @Override
     public void paintComponent(Graphics g){
@@ -93,6 +118,12 @@ public class FlappyDeutsch extends JPanel implements ActionListener, KeyListener
 
         //bird
         g.drawImage(bird.img, bird.x, bird.y, bird.width, bird.height, null);
+
+        //pipis
+        for(int i = 0; i < pipes.size(); i++){
+                Pipe pipe = pipes.get(i);
+                g.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height, null);
+        }
     }
 
     void move(){
@@ -100,6 +131,12 @@ public class FlappyDeutsch extends JPanel implements ActionListener, KeyListener
         velocityY += gravity;
         bird.y += velocityY;
         bird.y = Math.max(bird.y, 0);
+
+        //pipes
+        for(int i = 0; i < pipes.size(); i++){
+            Pipe pipe = pipes.get(i);
+            pipe.x += velocityX;
+    }
     }
 
     @Override
